@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CSE_DatabaseModelStoreContainer" CdmEntityContainer="CSE_DatabaseEntities">
+    <EntitySetMapping Name="Glossaries">
+      <EntityTypeMapping TypeName="CSE_DatabaseModel.Glossary">
+        <MappingFragment StoreEntitySet="Glossaries">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Term" ColumnName="Term" />
+          <ScalarProperty Name="Definition" ColumnName="Definition" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
