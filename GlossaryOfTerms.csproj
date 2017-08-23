@@ -217,6 +217,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CSE_dbModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Extended\Glossary.cs" />
     <Compile Include="Models\Glossary.cs">
       <DependentUpon>CSE_dbModel.tt</DependentUpon>
     </Compile>
