@@ -1,0 +1,147 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+        .navbar {
+            height: 100px;
+        }
+
+        span.field-validation-error {
+            color: red;
+        }
+
+        div.center, p.center, img.center {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            float: none !important;
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="navbar navbar-default" role="navigation">
+            <div class="navbar-inner">
+
+                <a class="navbar-brand">
+                    <h1>Glossaries</h1>
+                </a>
+
+            </div>
+        </div>
+
+        <div style="width: 90%; margin: 0 auto;" class="tablecontainer">
+            <a class="popup btn btn-primary" title="Add New Glossary" href="/home/save/0" style="margin-bottom:20px; margin-top:20px;"><i class="glyphicon glyphicon-plus icon-white"></i>&nbsp;Add New Glossary</a>
+            <table id="glossDatatable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Term</th>
+                        <th>Definition</th>
+                        <th data-orderable="false"></th>
+                        <th data-orderable="false"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var oTable = $('#glossDatatable').DataTable({
+                "ajax": {
+                    "url" : '/home/GetGlossaries',
+                    "type" : "get",
+                    "dataType" : "json"
+                },
+                "columns": [
+                    { "data": "Term", "autowidth": true },
+                    { "data": "Definition", "autowidth": true },
+                    {
+                        "data": "ID", "width": "50px", "render": function (data) {
+                            return '<a class="popup btn btn-info" title="Edit Glossary" href="/home/save/' + data + '"><i class="glyphicon glyphicon-edit icon-white"></i>&nbsp;Edit</a>';
+                        }
+                    },
+                    {
+                        "data": "ID", "width": "50px", "render": function (data) {
+                            return '<a class="popup btn btn-danger" title="Delete Glossary" href="/home/delete/' + data + '"><i class="glyphicon glyphicon-trash icon-white"></i>&nbsp;Delete</a>';
+
+                        }
+                    }
+                ]
+            })
+            $('.tablecontainer').on('click', 'a.popup', function (e) {
+                e.preventDefault();
+                openPopup($(this).attr('title'), $(this).attr('href'));
+            })
+            function openPopup(title, pageUrl) {
+                var $pageContent = $('<div/>');
+                $pageContent.load(pageUrl, function () {
+                    $('#popupForm', $pageContent).removeData('validator');
+                    $('#popupForm', $pageContent).removeData('unobtrusiveValidation');
+                    $.validator.unobtrusive.parse('form');
+                });
+                $dialog = $('<div class="popupWindow" style="overflow:auto"></div>')
+                        .html($pageContent)
+                        .dialog({
+                            draggable : false,
+                            autoopen : false,
+                            resizable : false,
+                            model : true,
+                            title: title,
+                            height : 400,
+                            width : 500,
+                            close: function () {
+                                $dialog.dialog('destroy').remove();
+                            }
+                        })
+
+                $('.popupwindow').on('submit', '#popupForm', function (e) {
+                    var url = $('#popupForm')[0].action;
+                    $.ajax({
+                        type : "POST",
+                        url: url,
+                        data: $('#popupForm').serialize(),
+                        success: function (data) {
+                            console.log(data);
+                            if (data.status) {
+                                $dialog.dialog('close');
+                                oTable.ajax.reload();
+                            }
+                            else {
+                                alert("Duplicate");
+                            }
+                        },
+                        error: function () {
+                            alert("error");
+                        }
+                    })
+
+                    e.preventDefault();
+
+                })
+
+                $dialog.dialog('open');
+            }
+        })
+    </script>
+</body>
+</html>
+
