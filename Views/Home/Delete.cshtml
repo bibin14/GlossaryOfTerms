@@ -1,0 +1,24 @@
+﻿@model GlossaryOfTerms.Models.Glossary
+
+@using (Html.BeginForm("delete", "home", FormMethod.Post, new { id = "popupForm" }))
+{
+    @Html.HiddenFor(a => a.ID)
+
+    <div class="alert alert-danger">
+        <strong>Are you sure you want to delete?</strong>
+    </div>
+
+    <div class="form-group">
+        <label>Term</label>
+        <pre class="prettyprint linenums">@Model.Term</pre>
+    </div>
+    <div class="form-group">
+        <label>Definition</label>
+        <pre class="prettyprint linenums">@Model.Definition</pre>
+    </div>
+
+    <div class="center">
+        <input type="submit" class="btn btn-danger" style="width:150px;" value="Delete" />
+    </div>
+}
+
